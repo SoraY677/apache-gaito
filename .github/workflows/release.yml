@@ -12,6 +12,8 @@ jobs:
   build:
     name: Merge → Build → Export
     runs-on: ubuntu-latest
+    permissions:
+      contents: write             # required to push commits back to the repo
 
     steps:
       # ── 1. Checkout release branch ──────────────────────────────────────
@@ -20,6 +22,7 @@ jobs:
         with:
           ref: release
           fetch-depth: 0          # full history needed for merge
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       # ── 2. Merge develop → release ──────────────────────────────────────
       - name: Merge from develop (or specified branch)
