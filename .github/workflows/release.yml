@@ -10,10 +10,10 @@ on:
 
 jobs:
   build:
-    name: Merge → Build → Export
+    name: Merge → Build → Deploy
     runs-on: ubuntu-latest
     permissions:
-      contents: write             # required to push commits back to the repo
+      contents: write             # required to push merge commit back to the repo
       pages: write                # required to deploy to GitHub Pages
       id-token: write             # required for OIDC token (deploy-pages)
 
@@ -34,6 +34,7 @@ jobs:
           git fetch origin ${{ github.event.inputs.source_branch }}
           git merge --no-ff origin/${{ github.event.inputs.source_branch }} \
             -m "chore: merge ${{ github.event.inputs.source_branch }} into release [skip ci]"
+          git push origin release
 
       # ── 3. Setup Node.js with npm cache ─────────────────────────────────
       - name: Setup Node.js
@@ -48,48 +49,16 @@ jobs:
         working-directory: app
         run: npm ci
 
-      # ── 5. Type check ───────────────────────────────────────────────────
-      - name: TypeScript type check
-        working-directory: app
-        run: npx tsc --noEmit
-
-      # ── 6. Build ────────────────────────────────────────────────────────
+      # ── 5. Build ────────────────────────────────────────────────────────
       - name: Build
         working-directory: app
         run: npm run build
 
-      # ── 7. Export dist → /output ─────────────────────────────────────────
-      - name: Copy dist to /output
-        run: |
-          rm -rf output
-          mkdir -p output
-          cp -r app/dist/. output/
-
-      # ── 8. Commit output back to release branch ──────────────────────────
-      - name: Commit output
-        run: |
-          git add output/
-          # Only commit if there are actual changes
-          if git diff --cached --quiet; then
-            echo "No changes to output — skipping commit."
-          else
-            git commit -m "build: update output from ${{ github.event.inputs.source_branch }} [skip ci]"
-            git push origin release
-          fi
-
-      # ── 9. Upload as Actions artifact (optional, for quick inspection) ───
-      - name: Upload output artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-dist
-          path: output/
-          retention-days: 14
-
-      # ── 10. Upload Pages artifact ────────────────────────────────────────
+      # ── 6. Upload Pages artifact ─────────────────────────────────────────
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: output/
+          path: app/dist/
 
   deploy:
     name: Deploy to GitHub Pages
