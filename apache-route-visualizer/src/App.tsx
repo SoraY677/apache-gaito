@@ -65,27 +65,30 @@ export default function App() {
   const [config, setConfig] = useState(DEFAULT_CONFIG);
   const [dividerX, setDividerX] = useState(50);
   const dragging = useRef(false);
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const handleMouseDown = useCallback((e) => {
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     dragging.current = true;
-    const onMouseMove = (ev) => {
+
+    const onMouseMove = (ev: MouseEvent) => {
       if (!dragging.current || !containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
       const pct = ((ev.clientX - rect.left) / rect.width) * 100;
       setDividerX(Math.min(80, Math.max(20, pct)));
     };
+
     const onMouseUp = () => {
       dragging.current = false;
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
     };
+
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
   }, []);
 
-  const handleLoad = useCallback((text) => setConfig(text), []);
+  const handleLoad = useCallback((text: string) => setConfig(text), []);
 
   return (
     <div className="app-root">
@@ -118,5 +121,3 @@ export default function App() {
     </div>
   );
 }
-
-

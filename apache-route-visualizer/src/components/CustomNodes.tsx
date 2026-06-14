@@ -1,7 +1,8 @@
-import { Handle, Position } from 'reactflow';
+import { Handle, Position, type NodeProps } from 'reactflow';
 import { Globe } from 'lucide-react';
+import type { InternetNodeData, VhNodeData, RouteNodeData, TargetNodeData, AnyRoute } from '../types';
 
-export function InternetNode() {
+export function InternetNode(_props: NodeProps<InternetNodeData>) {
   return (
     <div style={{
       background: 'linear-gradient(135deg, #1e3a5f, #0f2340)',
@@ -22,7 +23,7 @@ export function InternetNode() {
   );
 }
 
-export function VirtualHostNode({ data }) {
+export function VirtualHostNode({ data }: NodeProps<VhNodeData>) {
   return (
     <div style={{
       background: 'linear-gradient(135deg, #1e2d4a, #0f1929)',
@@ -53,7 +54,7 @@ export function VirtualHostNode({ data }) {
           {data.serverName}
         </div>
       )}
-      {data.serverAlias && data.serverAlias.length > 0 && (
+      {data.serverAlias.length > 0 && (
         <div style={{ color: '#64748b', fontSize: 11 }}>
           {data.serverAlias.join(', ')}
         </div>
@@ -69,7 +70,7 @@ export function VirtualHostNode({ data }) {
   );
 }
 
-const ROUTE_LABELS = {
+const ROUTE_META: Record<string, { icon: string; label: string }> = {
   proxy:    { icon: '⇌', label: 'ProxyPass' },
   redirect: { icon: '↪', label: 'Redirect' },
   rewrite:  { icon: '✎', label: 'RewriteRule' },
@@ -77,14 +78,35 @@ const ROUTE_LABELS = {
   location: { icon: '📍', label: 'Location' },
 };
 
-export function RouteNode({ data }) {
-  const { route, color } = data;
-  const meta = ROUTE_LABELS[route.type] || { icon: '?', label: route.type };
+function getStatusLabel(route: AnyRoute): string | null {
+  if (route.type !== 'redirect') return null;
+  const s = route.status;
+  if (!s) return null;
+  return s === 'permanent' ? '301' : s;
+}
 
-  const pathDisplay = route.path || route.pattern || '/';
-  const statusLabel = route.status
-    ? (route.status === 'permanent' || route.status === '301' ? '301' : route.status)
-    : null;
+function getFlags(route: AnyRoute): string[] {
+  if (route.type === 'rewrite') return route.flags;
+  return [];
+}
+
+function getConditions(route: AnyRoute): string[] {
+  if (route.type === 'rewrite') return route.conditions;
+  return [];
+}
+
+function getPathDisplay(route: AnyRoute): string {
+  if (route.type === 'rewrite') return route.pattern;
+  return route.path ?? '/';
+}
+
+export function RouteNode({ data }: NodeProps<RouteNodeData>) {
+  const { route, color } = data;
+  const meta = ROUTE_META[route.type] ?? { icon: '?', label: route.type };
+  const pathDisplay = getPathDisplay(route);
+  const statusLabel = getStatusLabel(route);
+  const flags = getFlags(route);
+  const conditions = getConditions(route);
 
   return (
     <div style={{
@@ -116,17 +138,17 @@ export function RouteNode({ data }) {
         {pathDisplay}
       </div>
 
-      {route.conditions && route.conditions.length > 0 && (
+      {conditions.length > 0 && (
         <div style={{ marginTop: 4, borderTop: `1px solid ${color.badge}`, paddingTop: 4 }}>
-          {route.conditions.map((c, i) => (
+          {conditions.map((c, i) => (
             <div key={i} style={{ color: '#64748b', fontSize: 10 }}>if {c}</div>
           ))}
         </div>
       )}
 
-      {route.flags && route.flags.length > 0 && (
+      {flags.length > 0 && (
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 3, marginTop: 4 }}>
-          {route.flags.map(f => (
+          {flags.map(f => (
             <span key={f} style={{
               background: '#0f172a',
               border: `1px solid ${color.badge}`,
@@ -144,8 +166,8 @@ export function RouteNode({ data }) {
   );
 }
 
-export function TargetNode({ data }) {
-  const { target, type, color } = data;
+export function TargetNode({ data }: NodeProps<TargetNodeData>) {
+  const { target, color } = data;
 
   const isUrl = target.startsWith('http://') || target.startsWith('https://') || target.startsWith('ws://');
   const isPath = target.startsWith('/') && !isUrl;
