@@ -1,0 +1,23 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #030712;
+}
+
+/* Syntax highlight tokens injected via innerHTML */
+.hl-keyword { color: #60a5fa; font-weight: 600; }
+.hl-comment  { color: #475569; font-style: italic; }
+.hl-string   { color: #86efac; }
+.hl-tag      { color: #f472b6; }
+.hl-number   { color: #fb923c; }
