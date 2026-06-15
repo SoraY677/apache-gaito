@@ -65,7 +65,10 @@ function RouteViewerInner({ configText, onLoad }: Props) {
     }
   }, [setNodes, setEdges, fitView]);
 
-  useEffect(() => { rebuild(configText); }, [configText, rebuild]);
+  useEffect(() => {
+    const id = setTimeout(() => rebuild(configText), 0);
+    return () => clearTimeout(id);
+  }, [configText, rebuild]);
 
   const handleSave = useCallback(() => {
     const blob = new Blob([configText], { type: 'text/plain' });

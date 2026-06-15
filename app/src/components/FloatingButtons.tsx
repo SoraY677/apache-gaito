@@ -1,4 +1,3 @@
-import { useRef } from 'react';
 import { Save, FolderOpen, RefreshCw, Maximize2, Info } from 'lucide-react';
 import type { ReactNode, CSSProperties } from 'react';
 
@@ -19,10 +18,6 @@ interface Props {
 }
 
 export default function FloatingButtons({ onSave, onLoad, onParse, onFitView, onInfo }: Props) {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleLoadClick = () => fileInputRef.current?.click();
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -35,11 +30,10 @@ export default function FloatingButtons({ onSave, onLoad, onParse, onFitView, on
   };
 
   const buttons: ButtonDef[] = [
-    { icon: <FolderOpen size={18} />, label: 'Load',  title: 'Load config file',      onClick: handleLoadClick, color: '#3b82f6' },
-    { icon: <Save       size={18} />, label: 'Save',  title: 'Save config file',      onClick: onSave,         color: '#22c55e' },
-    { icon: <RefreshCw  size={18} />, label: 'Parse', title: 'Re-parse & visualize',  onClick: onParse,        color: '#a855f7' },
-    { icon: <Maximize2  size={18} />, label: 'Fit',   title: 'Fit view',              onClick: onFitView,      color: '#f97316' },
-    { icon: <Info       size={18} />, label: 'Help',  title: 'About',                 onClick: onInfo,         color: '#64748b' },
+    { icon: <Save       size={18} />, label: 'Save',  title: 'Save config file',      onClick: onSave,    color: '#22c55e' },
+    { icon: <RefreshCw  size={18} />, label: 'Parse', title: 'Re-parse & visualize',  onClick: onParse,   color: '#a855f7' },
+    { icon: <Maximize2  size={18} />, label: 'Fit',   title: 'Fit view',              onClick: onFitView, color: '#f97316' },
+    { icon: <Info       size={18} />, label: 'Help',  title: 'About',                 onClick: onInfo,    color: '#64748b' },
   ];
 
   const baseStyle = (color: string): CSSProperties => ({
@@ -60,14 +54,6 @@ export default function FloatingButtons({ onSave, onLoad, onParse, onFitView, on
 
   return (
     <>
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept=".conf,.txt,.cfg,*"
-        style={{ display: 'none' }}
-        onChange={handleFileChange}
-      />
-
       <div style={{
         position: 'absolute',
         bottom: 24,
@@ -77,6 +63,26 @@ export default function FloatingButtons({ onSave, onLoad, onParse, onFitView, on
         flexDirection: 'column',
         gap: 10,
       }}>
+        <label
+          title="Load config file"
+          style={{ ...baseStyle('#3b82f6'), cursor: 'pointer' }}
+          onMouseEnter={e => {
+            (e.currentTarget as HTMLLabelElement).style.background = '#3b82f622';
+            (e.currentTarget as HTMLLabelElement).style.transform = 'scale(1.1)';
+          }}
+          onMouseLeave={e => {
+            (e.currentTarget as HTMLLabelElement).style.background = '#0f172acc';
+            (e.currentTarget as HTMLLabelElement).style.transform = 'scale(1)';
+          }}
+        >
+          <FolderOpen size={18} />
+          <input
+            type="file"
+            accept=".conf,.txt,.cfg,*"
+            style={{ display: 'none' }}
+            onChange={handleFileChange}
+          />
+        </label>
         {buttons.map((btn) => (
           <button
             key={btn.label}

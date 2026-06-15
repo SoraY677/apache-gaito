@@ -6,10 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint .",
     "preview": "vite preview",
     "check:type": "npx tsc --noEmit",
-    "check:lint": "eslint . --max-warnings 0"
+    "check:lint": "eslint . --max-warnings 0",
+    "fix:lint": "eslint . --fix"
   },
   "dependencies": {
     "lucide-react": "^1.18.0",
