@@ -75,7 +75,7 @@ function RouteViewerInner({ configText, onLoad }: Props) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'apache.conf';
+    a.download = 'htaccess.txt';
     a.click();
     URL.revokeObjectURL(url);
   }, [configText]);
