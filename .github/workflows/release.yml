@@ -7,6 +7,8 @@ on:
         description: "Branch to merge from (default: develop)"
         required: false
         default: "develop"
+  release:
+    types: [published]
 
 jobs:
   build:
