@@ -184,7 +184,7 @@ function RouteViewerInner({ configText, onLoad }: Props) {
             onClick={e => e.stopPropagation()}
           >
             <div style={{ color: '#e2e8f0', fontWeight: 700, fontSize: 16, marginBottom: 12 }}>
-              Apache Route Visualizer
+              Apache Gaito
             </div>
             <p style={{ margin: '0 0 10px' }}>
               Paste or load an Apache <code>.conf</code> file on the left. The routing graph updates automatically.

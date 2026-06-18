@@ -4,7 +4,7 @@ import ApacheEditor from './components/ApacheEditor';
 import RouteViewer from './components/RouteViewer';
 import './App.css';
 
-const DEFAULT_CONFIG = `# Apache Route Visualizer — Example Configuration
+const DEFAULT_CONFIG = `# Apache Gaito — Example Configuration
 # Edit this config to see the routing graph update in real time.
 
 <VirtualHost *:80>
@@ -95,7 +95,7 @@ export default function App() {
       <header className="app-header">
         <div className="app-header-brand">
           <span className="app-header-icon">⚙</span>
-          <span className="app-header-title">Apache Route Visualizer</span>
+          <span className="app-header-title">Apache Gaito</span>
         </div>
         <div className="app-header-labels">
           <span className="panel-label">Config Editor</span>

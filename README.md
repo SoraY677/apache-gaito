@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🌐 Apache Routing Viewer
+# 🌐 Apache Gaito
 
 powered by SoraY677 & AI Agents
 
@@ -8,7 +8,7 @@ powered by SoraY677 & AI Agents
 
 ## 💭 Overview
 
-visualize Apache.conf routings.
+visualize .htaccess routings.
 
 ## 🔧 Dev-on-local
 
@@ -24,4 +24,4 @@ npm run build
 
 ## 📦 Deploy
 
-[From GitHub Actions Workflow Dispatch](https://github.com/SoraY677/apache-routing-viewer/actions/workflows/release.yml)
+[From GitHub Actions Workflow Dispatch](https://github.com/SoraY677/apache-gaito/actions/workflows/release.yml)
